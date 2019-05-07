@@ -39,7 +39,8 @@ class PCA9685LED:
 	def stop(self):
 		self.ChangeDutyCycle(0)
 
-class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
+
+class PCA9685LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 							octoprint.plugin.SettingsPlugin,
 							octoprint.plugin.ShutdownPlugin,
 							octoprint.plugin.StartupPlugin,
@@ -103,19 +104,19 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 
 	def get_template_configs(self):
 		return [
-			dict(type="settings", name="LED Strip Control", custom_bindings=False)
+			dict(type="settings", name="PCA9685 LED Strip Control", custom_bindings=False)
 		]
 
 	def get_settings_defaults(self):
-		return dict(r=0, g=0, b=0, w=0, pigpiod=False, on_startup=True)
+		return dict(r=0, g=0, b=0, w=0, on_startup=True)
 
 	def on_settings_initialized(self):
-		self._logger.debug(u"LEDStripControl on_settings_load()")
+		self._logger.debug(u"PCA9685LEDStripControl on_settings_load()")
 
 		self._register_leds()
 
 	def on_settings_save(self, data):
-		self._logger.debug(u"LEDStripControl on_settings_save()")
+		self._logger.debug(u"PCA9685LEDStripControl on_settings_save()")
 		self._unregister_leds()
 		# cast to proper types before saving
 		for k in ('r', 'g', 'b', 'w'):
@@ -124,7 +125,7 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 		self._register_leds()
 
 	def on_settings_migrate(self, target, current=None):
-		self._logger.debug(u"LEDStripControl on_settings_migrate()")
+		self._logger.debug(u"PCA9685LEDStripControl on_settings_migrate()")
 		if current == 1:
 			# add the 2 new values included
 			self._settings.set(['w'], self.get_settings_defaults()["w"])
@@ -135,7 +136,7 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 	def get_update_information(self):
 		return dict(
 			ledstripcontrol=dict(
-				displayName="PCA9685 LED Strip Control Plugin",
+				displayName="PCA9685 PCA9685 LED Strip Control Plugin",
 				displayVersion=self._plugin_version,
 
 				# version check: github repository
@@ -153,7 +154,7 @@ __plugin_name__ = "PCA9685 LED Strip Control"
 
 def __plugin_load__():
 	global __plugin_implementation__
-	__plugin_implementation__ = LEDStripControlPlugin()
+	__plugin_implementation__ = PCA9685LEDStripControlPlugin()
 
 	global __plugin_hooks__
 	__plugin_hooks__ = {
