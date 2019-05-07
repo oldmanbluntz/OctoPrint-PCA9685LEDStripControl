@@ -135,7 +135,7 @@ class PCA9685LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 
 	def get_update_information(self):
 		return dict(
-			pca9685ledstripcontrol=dict(
+			PCA9685LEDStripControl=dict(
 				displayName="PCA9685 LED Strip Control Plugin",
 				displayVersion=self._plugin_version,
 
