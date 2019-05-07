@@ -15,7 +15,7 @@ Implements the M150 command syntax from the latest Marlin.
 
 1. Connect PCA9685 (address 0x40) and enable I2C in configuration
 
-    	`sudo raspi-config`
+    	sudo raspi-config
 
 2. Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
 or manually using this URL:
