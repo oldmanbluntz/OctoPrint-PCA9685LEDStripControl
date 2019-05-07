@@ -1,4 +1,4 @@
-# OctoPrint-LEDStripControl
+# OctoPrint-PCA9685LEDStripControl
 
 OctoPrint plugin that intercepts M150 GCode commands and controls LEDs connected to PCA9685 over I2C.
 
