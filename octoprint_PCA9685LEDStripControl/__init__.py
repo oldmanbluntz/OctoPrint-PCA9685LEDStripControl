@@ -34,7 +34,7 @@ class PCA9685LED:
 		self.pin = pin
 
 	def ChangeDutyCycle(self, duty_cycle):
-		self.pwm.set_pwm(self.pin, 0, duty_cycle)
+		self.pwm.set_pwm(self.pin, 0, int(duty_cycle))
 
 	def stop(self):
 		self.ChangeDutyCycle(0)
