@@ -1,6 +1,6 @@
 # OctoPrint-LEDStripControl
 
-OctoPrint Plugin that intercepts M150 GCode commands and controls local GPIOs accordingly.
+OctoPrint plugin that intercepts M150 GCode commands and controls LEDs connected to PCA9685 over I2C.
 
 Implements the M150 command syntax from the latest Marlin.
 
@@ -13,22 +13,20 @@ Implements the M150 command syntax from the latest Marlin.
 
 ## Setup
 
-1. Make sure that the OctoPrint user is in the gpio group via the following command.
+1. Connect PCA9685 (address 0x40) and enable I2C in configuration
 
-    	usermod -a -G gpio pi
+    	`sudo raspi-config`
 
-1. Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
+2. Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
 or manually using this URL:
 
-    	https://github.com/google/OctoPrint-LEDStripControl/archive/master.zip
+    	https://github.com/ozgunawesome/OctoPrint-PCA9685LEDStripControl/archive/master.zip
 
-1. Restart OctoPrint
+3. Restart OctoPrint
 
 ## Configuration
 
-**NOTE: GPIO pins should be specified as physical number and not BCM number.**
-
-Configure the GPIO pins via the OctoPrint settings UI.
+Configure the PCA9685 pins via the OctoPrint settings UI.
 
 ## Disclaimer
 
