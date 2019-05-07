@@ -145,11 +145,11 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 				current=self._plugin_version,
 
 				# update method: pip
-				# pip="https://github.com/google/OctoPrint-LEDStripControl/archive/{target_version}.zip"
+				pip="https://github.com/ozgunawesome/OctoPrint-PCA9685LEDStripControl/archive/{target_version}.zip"
 			)
 		)
 
-__plugin_name__ = "LED Strip Control"
+__plugin_name__ = "PCA9685 LED Strip Control"
 
 def __plugin_load__():
 	global __plugin_implementation__
