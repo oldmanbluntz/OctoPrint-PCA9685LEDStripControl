@@ -16,7 +16,7 @@
 # coding=utf-8
 
 plugin_identifier = "PCA9685LEDStripControl"
-plugin_package = "octoprint_PCA9685LEDStripControl_"
+plugin_package = "octoprint_PCA9685LEDStripControl"
 plugin_name = "OctoPrint-PCA9685LEDStripControl"
 plugin_version = "0.3.6"
 plugin_description = """OctoPrint plugin for controling RGB LED Strips via PCA9685 over I2C"""
