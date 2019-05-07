@@ -1,41 +1,35 @@
-<h4>GPIO Configuration</h4>
-<p>GPIO pins should be specified as <a href="http://pinout.xyz">physical pin numbers</a>, not GPIO/BCM numbers.</p>
+<h4>PCA9685 Configuration</h4>
+<p>Must be at address 0x40 (for now)</p>
 
 <form class="form-horizontal">
     <div class="control-group">
         <label class="control-label">Red Pin Number</label>
         <div class="controls">
-            <input type="number" step="any" min="0" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.r">
+            <input type="number" step="any" min="0" max="15" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.r">
         </div>
     </div>
 
     <div class="control-group">
         <label class="control-label">Green Pin Number</label>
         <div class="controls">
-            <input type="number" step="any" min="0" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.g">
+            <input type="number" step="any" min="0" max="15" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.g">
         </div>
     </div>
 
     <div class="control-group">
         <label class="control-label">Blue Pin Number</label>
         <div class="controls">
-            <input type="number" step="any" min="0" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.b">
+            <input type="number" step="any" min="0" max="15" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.b">
         </div>
     </div>
 
     <div class="control-group">
         <label class="control-label">White Pin Number (Optional)</label>
         <div class="controls">
-            <input type="number" step="any" min="0" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.w">
+            <input type="number" step="any" min="0" max="15" class="input-mini text-right" data-bind="value: settings.plugins.LEDStripControl.w">
         </div>
     </div>
 
-    <div class="control-group">
-        <label class="checkbox">
-            <input type="checkbox" data-bind="checked: settings.plugins.LEDStripControl.pigpiod">Use <a href="http://abyz.me.uk/rpi/pigpio/pigpiod.html">pigpiod</a>
-            <span class="help-inline">If unchecked use RPi.GPIO.  PiGPIOd should give smoother PWM frequencies but requires a more involved setup. Please see the <a href="http://abyz.co.uk/rpi/pigpio/pigpiod.html">documentation</a> for details.</span>
-        </label>
-    </div>
     <div class="control-group">
         <label class="checkbox">
             <input type="checkbox" data-bind="checked: settings.plugins.LEDStripControl.on_startup">Turn on LEDs on OctoPrint startup

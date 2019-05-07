@@ -16,53 +16,28 @@
 # coding=utf-8
 
 from __future__ import absolute_import
+from __future__ import division
+import time
 import re
 
 import octoprint.plugin
-import pigpio
-try:
-	import RPi.GPIO as GPIO
-except (ImportError, RuntimeError):
-	# RuntimeError gets thrown when you import RPi.GPIO on a non Raspberry Pi
-	GPIO = None
+import Adafruit_PCA9685
 
-phy_to_bcm = { 0:None, 1:None, 2:None, 3:2, 4:None, 5:3, 6:None, 7:4, 8:14,
-			  9:None, 10:15, 11:17, 12:18, 13:27, 14:None, 15:22, 16:23,
-			  17:None, 18:24, 19:10, 20:None, 21:9, 22:25, 23:11, 24:8, 25:None,
-			  26:7, 27:0, 28:1, 29:5, 30:None, 31:6, 32:12, 33:13, 34:None,
-			  35:19, 36:16, 37:26, 38:20, 39:None, 40:21 }
+pwm = Adafruit_PCA9685.PCA9685()
+pwm.set_pwm_freq(120)
 
-class PiGPIOpin(object):
-	def __init__(self, pigpiod, pin, logger):
-		self._pigpiod = pigpiod
-		self._logger = logger
+class PCA9685LED:
+	pwm = None
+	pin = None
+	def __init__(self, pwm, pin):
+		self.pwm = pwm
+		self.pin = pin
 
-		# attempt to convert the physical pin to a bcm pin
-		# how is this not in a library already?
-		if phy_to_bcm.get(pin) is not None:
-			self._pin = phy_to_bcm[pin]
-		else:
-			self._pin = pin
-		self._logger.debug(u"PiGPIOpin: coverted pin: %r to %r" % (pin, self._pin))
-
-		self._dutycycle = 0
-
-	def start(self, dutycycle):
-		self._dutycycle = dutycycle
-		self._logger.debug(u"PiGPIOpin: start() pin: %s" % self._pin)
-		if self._pigpiod.connected:
-			self._pigpiod.set_PWM_range(self._pin, 100) # emulate RPi.GPIO
-			self._pigpiod.set_PWM_dutycycle(self._pin, dutycycle)
+	def ChangeDutyCycle(self, duty_cycle):
+		self.pwm.set_pwm(self.pin, 0, duty_cycle)
 
 	def stop(self):
-		self._logger.debug(u"PiGPIOpin: stop() pin: %s" % self._pin)
-		if self._pigpiod.connected:
-			self._pigpiod.set_PWM_range(self._pin, 100) # emulate RPi.GPIO
-			self._pigpiod.set_PWM_dutycycle(self._pin, 0)
-
-	def ChangeDutyCycle(self, dutycycle):
-		self._logger.debug(u"PiGPIOpin: ChangeDutyCycle() pin: %s" % self._pin)
-		self.start(dutycycle)
+		self.ChangeDutyCycle(0)
 
 class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 							octoprint.plugin.SettingsPlugin,
@@ -72,30 +47,6 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 
 	def __init__(self):
 		self._leds = dict(r=None, g=None, b=None, w=None)
-		self._pigpiod = None
-
-	def _setup_pin(self, pin):
-		self._logger.debug(u"_setup_pin(%s)" % (pin,))
-		if pin:
-			p = None
-			startup = 100.0 if self._settings.get_boolean(['on_startup']) else 0.0
-
-			if self._pigpiod is None:
-				self._pigpiod = pigpio.pi()
-
-			if self._settings.get_boolean(['pigpiod']):
-				if not self._pigpiod.connected:
-					self._logger.error(u"Unable to communicate with PiGPIOd")
-				else:
-					p = PiGPIOpin(self._pigpiod, pin, self._logger)
-			else:
-				GPIO.setwarnings(False)
-				GPIO.setmode(GPIO.BOARD)
-				GPIO.setup(pin, GPIO.OUT)
-				GPIO.output(pin, GPIO.HIGH)
-				p = GPIO.PWM(pin, 100)
-			p.start(startup)
-			return p
 
 	def _unregister_leds(self):
 		self._logger.debug(u"_unregister_leds()")
@@ -103,9 +54,6 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 			if self._leds[i]:
 				self._leds[i].ChangeDutyCycle(0)
 				self._leds[i].stop()
-
-		if not self._settings.get_boolean(['pigpiod']) and GPIO:
-			GPIO.cleanup()
 		self._leds = dict(r=None, g=None, b=None)
 
 	def _register_leds(self):
@@ -113,17 +61,14 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 		for i in ('r', 'g', 'b', 'w'):
 			pin = self._settings.get_int([i])
 			self._logger.debug(u"got pin(%s)" % (pin,))
-			self._leds[i] = self._setup_pin(pin)
+			self._leds[i] = PCA9685LED(pwm, pin)
 
 	def on_after_startup(self):
-		self._logger.debug(u"LEDStripControl Startup")
-		if GPIO:
-			self._logger.debug(u"RPi.GPIO version %s" % (GPIO.VERSION,))
+		self._logger.debug(u"PCA9685LEDStripControl Startup")
 
 	def on_shutdown(self):
-		self._logger.debug(u"LEDStripControl Shutdown")
+		self._logger.debug(u"PCA9685LEDStripControl Shutdown")
 		self._unregister_leds()
-		self._pigpiod.stop()
 
 	def HandleM150(self, comm_instance, phase, cmd, cmd_type, gcode, *args, **kwargs):
 		if gcode and cmd.startswith("M150"):
@@ -140,8 +85,8 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 				except ValueError:
 					# more than likely match.group(2) was unspecified
 					v = 255.0
-				v = v/255.0 * 100.0 # convert RGB to RPi dutycycle
-				v = max(min(v, 100.0), 0.0) # clamp the value
+				v = v/255.0 * 4095.0 # convert RGB to RPi dutycycle
+				v = max(min(v, 4095.0), 0.0) # clamp the value
 				dutycycles[k] = v
 				self._logger.debug(u"match 1: %s 2: %s" % (k, v))
 
@@ -190,17 +135,17 @@ class LEDStripControlPlugin(octoprint.plugin.AssetPlugin,
 	def get_update_information(self):
 		return dict(
 			ledstripcontrol=dict(
-				displayName="LED Strip Control Plugin",
+				displayName="PCA9685 LED Strip Control Plugin",
 				displayVersion=self._plugin_version,
 
 				# version check: github repository
 				type="github_release",
-				user="google",
-				repo="OctoPrint-LEDStripControl",
+				user="ozgunawesome",
+				repo="OctoPrint-PCA9685LEDStripControl",
 				current=self._plugin_version,
 
 				# update method: pip
-				pip="https://github.com/google/OctoPrint-LEDStripControl/archive/{target_version}.zip"
+				# pip="https://github.com/google/OctoPrint-LEDStripControl/archive/{target_version}.zip"
 			)
 		)
 
