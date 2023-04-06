@@ -25,7 +25,3 @@ Implements the M150 command syntax from the latest Marlin.
 ## Configuration
 
 Configure the PCA9685 pins via the OctoPrint settings UI.
-
-## Disclaimer
-
-This is **not** an official Google product.
