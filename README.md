@@ -18,16 +18,9 @@ Implements the M150 command syntax from the latest Marlin.
 
 ## Setup
 
-1. Connect PCA9685 (address 0x40) and enable I2C in configuration
+1. Connect PCA9685 (address 0x40) to the FT232H's I2C pins.
 
-    	sudo raspi-config
-
-2. Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
-or manually using this URL:
-
-    	https://github.com/ozgunawesome/OctoPrint-PCA9685LEDStripControl/archive/master.zip
-
-3. Restart OctoPrint
+2. Install the plugin (all dependencies install automatically)
 
 ## Configuration
 
