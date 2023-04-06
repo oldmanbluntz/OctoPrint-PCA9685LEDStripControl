@@ -1,6 +1,7 @@
 # OctoPrint-PCA9685LEDStripControl
 
-OctoPrint plugin that intercepts M150 GCode commands and controls LEDs connected to PCA9685 over I2C.
+OctoPrint plugin that intercepts M150 GCode commands and controls LEDs connected to PCA9685 over I2C. Forked to add support to connect 
+to a desktop PC through I2C on an FT232H. Also updated the code to work with newer releases of Octoprint. This does not work in python 2 at all. Tested on Python 3.10 and higher.
 
 ![PCA9685 dev board](https://www.picclickimg.com/d/l400/pict/362541152188_/10PCS-PCA9685-16-Channel-12-bit-PWM-Servo.jpg)
 
