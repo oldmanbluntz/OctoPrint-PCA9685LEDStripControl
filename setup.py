@@ -1,64 +1,50 @@
-#
-# Copyright 2017 Google Inc.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# coding=utf-8
+from setuptools import setup
 
 plugin_identifier = "PCA9685LEDStripControl"
 plugin_package = "octoprint_PCA9685LEDStripControl"
-plugin_name = "OctoPrint-PCA9685LEDStripControl"
-plugin_version = "0.3.9"
-plugin_description = """OctoPrint plugin for controling RGB LED Strips via PCA9685 over I2C"""
-plugin_author = "Ozgun Ayaz"
-plugin_author_email = "11738322+ozgunawesome@users.noreply.github.com"
-plugin_url = "https://github.com/ozgunawesome/OctoPrint-PCA9685LEDStripControl"
-plugin_license = "Apache"
-plugin_requires = ["Adafruit_PCA9685"]
-
+plugin_name = "OctoPrint-Pca9685ledstripcontrol"
+plugin_version = "0.1"
+plugin_description = """OctoPrint plugin for controlling RGB LED Strips via PCA9685 over I2C"""
+plugin_author = "ozgunawesome, fork and updates by Mike Bailey"
+plugin_author_email = "michael.l.bailey@hotmail.com"
+plugin_url = "https://github.com/oldmanbluntz/OctoPrint-PCA9685LEDStripControl"
+plugin_license = "AGPLv3"
+plugin_requires = ["adafruit-blinka", "adafruit-circuitpython-pca9685"]
 plugin_additional_data = []
 plugin_additional_packages = []
 plugin_ignored_packages = []
-additional_setup_parameters = {}
-
-from setuptools import setup
+additional_setup_parameters = {"python_requires": ">=3,<4"}
 
 try:
-	import octoprint_setuptools
+    import octoprint_setuptools
 except:
-	print("Could not import OctoPrint's setuptools, are you sure you are running that under "
-	      "the same python installation that OctoPrint is installed under?")
-	import sys
-	sys.exit(-1)
+    print(
+        "Could not import OctoPrint's setuptools, are you sure you are running that under "
+        "the same python installation that OctoPrint is installed under?"
+    )
+    import sys
+
+    sys.exit(-1)
 
 setup_parameters = octoprint_setuptools.create_plugin_setup_parameters(
-	identifier=plugin_identifier,
-	package=plugin_package,
-	name=plugin_name,
-	version=plugin_version,
-	description=plugin_description,
-	author=plugin_author,
-	mail=plugin_author_email,
-	url=plugin_url,
-	license=plugin_license,
-	requires=plugin_requires,
-	additional_packages=plugin_additional_packages,
-	ignored_packages=plugin_ignored_packages,
-	additional_data=plugin_additional_data
+    identifier=plugin_identifier,
+    package=plugin_package,
+    name=plugin_name,
+    version=plugin_version,
+    description=plugin_description,
+    author=plugin_author,
+    mail=plugin_author_email,
+    url=plugin_url,
+    license=plugin_license,
+    requires=plugin_requires,
+    additional_packages=plugin_additional_packages,
+    ignored_packages=plugin_ignored_packages,
+    additional_data=plugin_additional_data,
 )
 
 if len(additional_setup_parameters):
-	from octoprint.util import dict_merge
-	setup_parameters = dict_merge(setup_parameters, additional_setup_parameters)
+    from octoprint.util import dict_merge
+
+    setup_parameters = dict_merge(setup_parameters, additional_setup_parameters)
 
 setup(**setup_parameters)
